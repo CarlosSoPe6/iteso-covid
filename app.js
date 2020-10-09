@@ -9,8 +9,10 @@ const port = process.env.PORT || 3000;
 const app = express();
 
 const pruebasRouter = require('./routes/pruebas.router');
+const usersRouter = require('./routes/users.router');
 
 app.use('/api/pruebas', pruebasRouter);
+app.use('/api/users', usersRouter);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console

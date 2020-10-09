@@ -1,8 +1,6 @@
 /* eslint linebreak-style: ["error", "windows"] */
 
 /**
- * Módulo del controlador de nodos.
- * Este archivo contiene todos los endpoints del controlador de nodos.
  * @author Isaac Cabrera Cortés <isaaccabrera31@gmail.com>
  */
 const pruebasModel = require('../db/pruebas.model');
