@@ -25,9 +25,10 @@ async function getAllComunicaciones(req, res) {
  * @param {import('express').Response} res Response parameter.
  */
 async function postComunicacion(req, res) {
-  const validation = validator(req.body);
+  const validation = validator.validate(req.body);
   if (!validation.valid) {
     res.status(400).send(validation.data);
+    return;
   }
   try {
     const { data } = validation;
@@ -64,11 +65,17 @@ async function getComunicacion(req, res) {
  */
 async function putComunicacion(req, res) {
   const { id } = req.params;
-  const validation = validator(req.body);
+  const validation = validator.validate(req.body);
   if (!validation.valid) {
     res.status(400).send(validation.data);
+    return;
   }
   try {
+    const exists = await validator.exists(id);
+    if (!exists) {
+      res.status(400).send(`${id} no existe`);
+      return;
+    }
     const { data } = validation;
     await model.put(id, data);
     res.status(201).json(data);
