@@ -11,10 +11,12 @@ const app = express();
 const comunicacionesRouter = require('./routes/comunicaciones.router');
 const pruebasRouter = require('./routes/pruebas.router');
 const usersRouter = require('./routes/users.router');
+const datosgovRouter = require('./routes/datosgov.router');
 
 app.use('/api/comunicaciones', comunicacionesRouter);
 app.use('/api/pruebas', pruebasRouter);
 app.use('/api/users', usersRouter);
+app.use('/api/datosgov', datosgovRouter);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
