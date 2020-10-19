@@ -1,8 +1,10 @@
 const express = require('express');
-const pruebasController = require('../controllers/users.controller');
+const userController = require('../controllers/users.controller');
 
 const router = express.Router();
 
-router.get('/', pruebasController.getUsers);
+router.get('/', userController.getUsers);
+router.post('/', userController.postUser);
+router.get('/:folio', userController.getUserByFolio);
 
 module.exports = router;

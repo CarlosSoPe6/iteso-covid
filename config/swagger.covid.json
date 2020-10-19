@@ -905,6 +905,28 @@
                     "type": "string"
                 }
             }
+        },
+        "Usuario": {
+            "type": "object",
+            "properties":{
+                "Contrasenia": {
+                    "type": "string",
+                    "description": "Contraseña del usuario."
+                },
+                "Edad": {
+                    "type":"integer"
+                },
+                "Sexo": {
+                    "type": "integer",
+                    "enum": [0,1]
+                },
+                "Latitud": {
+                    "type":"string"
+                },
+                "Longitud": {
+                    "type":"string"
+                }
+            }
         }
     }
 }
