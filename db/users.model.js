@@ -1,4 +1,3 @@
-/* eslint linebreak-style: ["error", "windows"] */
 const { getConnection } = require('../config/dbConfig');
 
 const QUERY_GET_USERS = 'SELECT * FROM Usuarios';

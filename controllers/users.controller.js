@@ -1,5 +1,3 @@
-/* eslint linebreak-style: ["error", "windows"] */
-
 /**
  * @author Isaac Cabrera Cortés <isaaccabrera31@gmail.com>
  */
