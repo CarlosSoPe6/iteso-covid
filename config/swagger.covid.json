@@ -16,14 +16,14 @@
         "http"
     ],
     "paths": {
-        "/covidV2020/api/actual": {
+        "/covidV2020/api/pruebas": {
             "get": {
                 "tags": [
-                    "Actualizaciones"
+                    "Pruebas"
                 ],
-                "summary": "Obtener todas las actualizaciones",
+                "summary": "Obtener todas las pruebas",
                 "description": "",
-                "operationId": "getAllActualizaciones",
+                "operationId": "getAllPruebas",
                 "consumes": [
                     "application/json"
                 ],
@@ -36,7 +36,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Folio"
+                                "$ref": "#/definitions/Prueba"
                             }
                         }
                     }
@@ -62,7 +62,7 @@
                         "description": "Nueva actualizacion",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Folio"
+                            "$ref": "#/definitions/Prueba"
                         }
                     }
                 ],
@@ -76,14 +76,14 @@
                 }
             }
         },
-        "/covidV2020/api/actual/folio/{folio}": {
+        "/covidV2020/api/actual/id/{id}": {
             "get": {
                 "tags": [
-                    "Actualizaciones"
+                    "Pruebas"
                 ],
-                "summary": "Obtener actualizacion por folio especifico",
+                "summary": "Obtener prueba por id especifico",
                 "description": "",
-                "operationId": "getActualizacion",
+                "operationId": "get",
                 "consumes": [
                     "application/json"
                 ],
@@ -92,7 +92,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "folio",
+                        "name": "id",
                         "in": "path",
                         "type": "number",
                         "required": true
@@ -102,7 +102,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/Folio"
+                            "$ref": "#/definitions/Prueba"
                         }
                     },
                     "400": {
@@ -112,11 +112,11 @@
             },
             "put": {
                 "tags": [
-                    "Actualizaciones"
+                    "Pruebas"
                 ],
-                "summary": "Modificar/actualizar un folio en especifico",
+                "summary": "Modificar/actualizar una prueba en especifico",
                 "description": "",
-                "operationId": "modificarFolio",
+                "operationId": "modificarPrueba",
                 "consumes": [
                     "application/json"
                 ],
@@ -125,7 +125,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "folio",
+                        "name": "id",
                         "in": "path",
                         "type": "number",
                         "required": true
@@ -133,10 +133,10 @@
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "Folio a ser modificado",
+                        "description": "Prueba a ser modificado",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Folio"
+                            "$ref": "#/definitions/Prueba"
                         }
                     }
                 ],
@@ -151,11 +151,11 @@
             },
             "delete": {
                 "tags": [
-                    "Actualizaciones"
+                    "Pruebas"
                 ],
-                "summary": "Eliminar un folio en especifico",
+                "summary": "Eliminar una prueba en especifico",
                 "description": "(Existe solo por si es necesario eliminar por la cuestion de proteccion de datos)",
-                "operationId": "eliminarFolio",
+                "operationId": "eliminarPrueba",
                 "consumes": [
                     "application/json"
                 ],
@@ -164,7 +164,7 @@
                 ],
                 "parameters": [
                     {
-                        "name": "folio",
+                        "name": "id",
                         "in": "path",
                         "type": "number",
                         "required": true
@@ -180,14 +180,14 @@
                 }
             }
         },
-        "/covidV2020/api/actual/username/{username}": {
+        "/covidV2020/api/actual/folio/{folio}": {
             "get": {
                 "tags": [
-                    "Actualizaciones"
+                    "Pruebas"
                 ],
-                "summary": "Obtener todas las actualizaciones del usuario especificado",
+                "summary": "Obtener las pruebas de un usuario según su folio",
                 "description": "",
-                "operationId": "getActualizacionEspecifica",
+                "operationId": "get",
                 "consumes": [
                     "application/json"
                 ],
@@ -196,34 +196,34 @@
                 ],
                 "parameters": [
                     {
-                        "name": "username",
+                        "name": "folio",
                         "in": "path",
-                        "type": "number",
+                        "type": "string",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "400": {
+                    "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Folio"
+                            "items":{
+                                "$ref": "#/definitions/Prueba"
                             }
                         }
                     },
-                    "404": {
+                    "400": {
                         "description": "Not found"
                     }
                 }
             },
             "delete": {
                 "tags": [
-                    "Actualizaciones"
+                    "Pruebas"
                 ],
-                "summary": "Eliminar algun usuario",
+                "summary": "Eliminar las pruebas de un usuario según su folio.",
                 "description": "(Existe solo por si es necesario eliminar por la cuestion de proteccion de datos)",
-                "operationId": "eliminarUsuario",
+                "operationId": "eliminarPruebas",
                 "consumes": [
                     "application/json"
                 ],
@@ -232,15 +232,18 @@
                 ],
                 "parameters": [
                     {
-                        "name": "username",
+                        "name": "folio",
                         "in": "path",
-                        "type": "number",
+                        "type": "string",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "200":{
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Invalid folio"
                     },
                     "404": {
                         "description": "Not found"
@@ -248,7 +251,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/recom": {
+        "/covidV2020/api/recom": {
             "get": {
                 "tags": [
                     "Recomendaciones"
@@ -309,7 +312,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/recom/nivel/{id}": {
+        "/covidV2020/api/recom/nivel/{id}": {
             "get": {
                 "tags": [
                     "Recomendaciones"
@@ -340,7 +343,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/recom/{id}": {
+        "/covidV2020/api/recom/{id}": {
             "get": {
                 "tags": [
                     "Recomendaciones"
@@ -423,7 +426,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/comunicaciones": {
+        "/covidV2020/api/comunicaciones": {
             "get": {
                 "tags": [
                     "Comunicaciones"
@@ -483,7 +486,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/comunicaciones/{id}": {
+        "/covidV2020/api/comunicaciones/{id}": {
             "get": {
                 "tags": [
                     "Comunicaciones"
@@ -563,7 +566,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/gobierno": {
+        "/covidV2020/api/gobierno": {
             "get": {
                 "tags": [
                     "Datos del gobierno"
@@ -621,7 +624,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/gobierno/{clave_Entidad}": {
+        "/covidV2020/api/gobierno/{clave_Entidad}": {
             "get": {
                 "tags": [
                     "Datos del gobierno"
@@ -654,7 +657,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/gobierno/fecha/{fecha}": {
+        "/covidV2020/api/gobierno/fecha/{fecha}": {
             "get": {
                 "tags": [
                     "Datos del gobierno"
@@ -688,130 +691,166 @@
         }
     },
     "definitions": {
-        "Folio": {
+        "Prueba": {
             "type": "object",
             "properties": {
-                "idEncuesta": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "Un numero cualquiera"
-                },
-                "idUsuario": {
+                "folio": {
                     "type": "string",
-                    "description": "El nombre del usuario"
+                    "description": "El folio del usuario"
                 },
                 "dolorSeveroPecho": {
-                    "type": "boolean",
-                    "description": "1 Si tiene dolor de Pecho, 0 si NO tiene dolor de pecho"
+                    "type": "integer",
+                    "description": "1 Si tiene dolor de Pecho, 0 si NO tiene dolor de pecho",
+                    "minimum": 0,
+                    "maximum": 1            
                 },
                 "difExtremaRespirar": {
-                    "type": "boolean",
-                    "description": "1 Si tiene dificultad extrama para respirar, 0 si NO tiene dificultad extrama para respirar"
+                    "type": "integer",
+                    "description": "1 Si tiene dificultad extrama para respirar, 0 si NO tiene dificultad extrama para respirar",
+                    "minimum": 0,
+                    "maximum": 1                 
                 },
                 "desorientado": {
-                    "type": "boolean",
-                    "description": "1 Si se encuentra desorientado , 0 si NO se encuentra desorientado"
+                    "type": "integer",
+                    "description": "1 Si se encuentra desorientado , 0 si NO se encuentra desorientado",
+                    "minimum": 0,
+                    "maximum": 1   
                 },
                 "respEstimulos": {
-                    "type": "boolean",
-                    "description": "1 Si se no tiene respuesta a estimulos o 0 si NO tiene respuesta a estimulos"
+                    "type": "integer",
+                    "description": "1 Si se no tiene respuesta a estimulos o 0 si NO tiene respuesta a estimulos",
+                    "minimum": 0,
+                    "maximum": 1   
                 },
                 "olfato": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de la disminucion de olfato"
+                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de la disminucion de olfato",
+                    "minimum": 0,
+                    "maximum": 10
                 },
                 "gusto": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de la disminucion de gusto"
+                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de la disminucion de gusto",
+                    "minimum": 0,
+                    "maximum": 10
                 },
                 "fiebre": {
                     "type": "integer",
                     "format": "int32",
-                    "description": ">38 ° tiene fiebre, si no sabe pongan 0"
+                    "description": ">38 ° tiene fiebre, si no sabe pongan 0",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "escalofrios": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de escalofrios"
+                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de escalofrios",
+                    "minimum": 0,
+                    "maximum": 10   
                 },
                 "respiracion": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de problemas para respirar"
+                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de problemas para respirar",
+                    "minimum": 0,
+                    "maximum": 10
                 },
                 "diarrea": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  diarrea"
+                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  diarrea",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "vomito": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  vomito"
+                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  vomito",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "tos": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene tos"
+                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene tos",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "dolorMuscular": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de si tiene dolor muscular y que tanto"
+                    "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de si tiene dolor muscular y que tanto",
+                    "minimum": 0,
+                    "maximum": 10
                 },
                 "dolorCabeza": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene de dolor de cabeza"
+                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene de dolor de cabeza",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "irritacionOjos": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  de irritacion de ojos"
+                    "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  de irritacion de ojos",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "sangradoRespiratorio": {
                     "type": "integer",
                     "format": "int32",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene sangrado resperiratorio"
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene sangrado resperiratorio",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "embarazada": {
-                    "type": "boolean",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si esta embarazada"
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si esta embarazada",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "consumeTabaco": {
-                    "type": "boolean",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si consume tabaco"
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si consume tabaco",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "enfCardiovascular": {
-                    "type": "boolean",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene enfermedades cardiovasculares"
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene enfermedades cardiovasculares",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "diabetes": {
-                    "type": "boolean",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene diabetes"
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene diabetes",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "cancer": {
-                    "type": "boolean",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene cancer"
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene cancer",
+                    "minimum": 0,
+                    "maximum": 1
                 },
                 "obeso": {
-                    "type": "boolean",
-                    "description": "0 o 1, 0 como lo mas bajo y 1 que si es obeso"
-                },
-                "fechaCreacion": {
-                    "type": "string",
-                    "format": "date-time",
-                    "description": "AAAA-MM-DD"
-                },
-                "escrutinio": {
-                    "type": "boolean",
-                    "description": "Al momento de ustedes mandar la informacion de arriba, nosotros como backend responderemos con esto de (escrutinio) que es el resultado de la actualizacion. \n 4 Critico \n 3 Moderado  \n 2 Propenso \n 1 Recomendaciones basicas"
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "0 o 1, 0 como lo mas bajo y 1 que si es obeso",
+                    "minimum": 0,
+                    "maximum": 1
                 }
             },
             "xml": {
-                "name": "Folio"
+                "name": "Prueba"
             }
         },
         "DatosGobierno": {
