@@ -1,4 +1,3 @@
-const { getConnection } = require('../config/dbConfig');
 const userHash = require('../utils/user.hash');
 
 const QUERY_GET_USERS = 'SELECT * FROM Usuarios';
@@ -11,8 +10,7 @@ const QUERY_GET_USER_BY_FOLIO = 'SELECT * FROM Usuarios WHERE IDUsuario = ?';
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function getUsers() {
-  const connection = await getConnection();
+async function getUsers(connection) {
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_GET_USERS,
@@ -28,9 +26,8 @@ async function getUsers() {
   });
 }
 
-async function getUserByFolio(folio) {
+async function getUserByFolio(connection, folio) {
   const id = userHash.getIdFromFolio(folio);
-  const connection = await getConnection();
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_GET_USER_BY_FOLIO,
@@ -55,7 +52,7 @@ async function getUserByFolio(folio) {
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function postUser(user) {
+async function postUser(connection, user) {
   const userData = [
     user.Contrasenia,
     user.Edad,
@@ -64,7 +61,6 @@ async function postUser(user) {
     user.Latitud,
     user.Longitud,
   ];
-  const connection = await getConnection();
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_INSERT_USER,

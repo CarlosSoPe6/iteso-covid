@@ -5,6 +5,7 @@
 const usersModel = require('../db/users.model');
 const validator = require('../validators/users');
 const validatorFolio = require('../validators/folio');
+const { executionContext } = require('../db/executionContext');
 
 /**
 * @async
@@ -13,18 +14,21 @@ const validatorFolio = require('../validators/folio');
 * @param {import('express').Response} res Response parameter.
 */
 async function getUsers(req, res) {
-  usersModel.getUsers()
-    .then((users) => {
-      res.status(200);
-      res.send(users);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    usersModel.getUsers(connection)
+      .then((users) => {
+        res.status(200);
+        res.send(users);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -41,23 +45,26 @@ async function getUserByFolio(req, res) {
     res.send({ err: 'Invalid user folio' });
     return;
   }
-  usersModel.getUserByFolio(folio)
-    .then((user) => {
-      if (user === undefined) {
-        res.status(404);
-        res.send();
-      } else {
-        res.status(200);
-        res.json(user);
-      }
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    usersModel.getUserByFolio(connection, folio)
+      .then((user) => {
+        if (user === undefined) {
+          res.status(404);
+          res.send();
+        } else {
+          res.status(200);
+          res.json(user);
+        }
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -73,18 +80,21 @@ async function postUser(req, res) {
     res.json(validation.data);
     return;
   }
-  usersModel.postUser(req.body)
-    .then((users) => {
-      res.status(200);
-      res.send(users);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    usersModel.postUser(connection, req.body)
+      .then((users) => {
+        res.status(200);
+        res.send(users);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 module.exports = {
