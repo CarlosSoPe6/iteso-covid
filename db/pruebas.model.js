@@ -1,4 +1,3 @@
-const { getConnection } = require('../config/dbConfig');
 const userHash = require('../utils/user.hash');
 const queryGenerator = require('../utils/query.generator');
 const escrutinioCalculator = require('../utils/escrutinio.calculator');
@@ -16,8 +15,7 @@ const QUERY_DELETE_PRUEBA_BY_FOLIO = 'DELETE FROM Actualizaciones WHERE idUsuari
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function getPruebas() {
-  const connection = await getConnection();
+async function getPruebas(connection) {
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_GET_PRUEBAS,
@@ -43,8 +41,7 @@ async function getPruebas() {
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function getPruebaById(idPrueba) {
-  const connection = await getConnection();
+async function getPruebaById(connection, idPrueba) {
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_GET_PRUEBA_BY_ID, idPrueba,
@@ -71,14 +68,13 @@ async function getPruebaById(idPrueba) {
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function postPrueba(data) {
+async function postPrueba(connection, data) {
   const prueba = data;
   prueba.idUsuario = userHash.getIdFromFolio(prueba.folio);
   prueba.fechaCreacion = new Date();
   const escrutinio = escrutinioCalculator.compute(prueba);
   prueba.escrutinio = escrutinio;
   delete prueba.folio;
-  const connection = await getConnection();
 
   return new Promise((resolve, reject) => {
     const query = queryGenerator.generateInsertQuery('Actualizaciones', prueba);
@@ -102,8 +98,7 @@ async function postPrueba(data) {
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function deletePruebaById(id) {
-  const connection = await getConnection();
+async function deletePruebaById(connection, id) {
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_DELETE_PRUEBA_BY_ID,
@@ -126,9 +121,8 @@ async function deletePruebaById(id) {
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function getPruebaByFolio(folio) {
+async function getPruebaByFolio(connection, folio) {
   const idUsuario = userHash.getIdFromFolio(folio);
-  const connection = await getConnection();
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_GET_PRUEBAS_BY_FOLIO,
@@ -156,9 +150,8 @@ async function getPruebaByFolio(folio) {
  * @throws {import('mysql').MysqlError}
  * @returns {Promise<Object>} Resultado de la consulta.
  */
-async function deletePruebaByFolio(folio) {
+async function deletePruebaByFolio(connection, folio) {
   const idUsuario = userHash.getIdFromFolio(folio);
-  const connection = await getConnection();
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_DELETE_PRUEBA_BY_FOLIO,
@@ -174,8 +167,7 @@ async function deletePruebaByFolio(folio) {
   });
 }
 
-async function putPruebaById(id, data) {
-  const connection = await getConnection();
+async function putPruebaById(connection, id, data) {
   const prueba = data;
   const escrutinio = escrutinioCalculator.compute(prueba);
   prueba.escrutinio = escrutinio;
@@ -193,7 +185,11 @@ async function putPruebaById(id, data) {
           reject(err);
           return;
         }
-        resolve(results);
+        if (results.affectedRows !== 1) {
+          reject();
+          return;
+        }
+        resolve(escrutinio);
       },
     );
   });

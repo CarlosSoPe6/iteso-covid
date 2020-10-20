@@ -4,6 +4,7 @@
 const pruebasModel = require('../db/pruebas.model');
 const validator = require('../validators/prueba');
 const validatorFolio = require('../validators/folio');
+const { executionContext } = require('../db/executionContext');
 
 /**
  * GET /api/pruebas
@@ -13,18 +14,21 @@ const validatorFolio = require('../validators/folio');
  * @param {import('express').Response} res Response parameter.
  */
 async function getPruebas(req, res) {
-  pruebasModel.getPruebas()
-    .then((pruebas) => {
-      res.statusCode = 200;
-      res.send(pruebas);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.getPruebas(connection)
+      .then((pruebas) => {
+        res.statusCode = 200;
+        res.send(pruebas);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -32,23 +36,26 @@ async function getPruebas(req, res) {
  */
 async function getPruebaById(req, res) {
   const idPrueba = req.params.id;
-  pruebasModel.getPruebaById(idPrueba)
-    .then((prueba) => {
-      if (prueba === undefined) {
-        res.status(404);
-        res.send();
-        return;
-      }
-      res.statusCode = 200;
-      res.send(prueba);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.getPruebaById(connection, idPrueba)
+      .then((prueba) => {
+        if (prueba === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(prueba);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 async function postPrueba(req, res) {
@@ -65,37 +72,43 @@ async function postPrueba(req, res) {
     res.json(validation.data);
     return;
   }
-  pruebasModel.postPrueba(data)
-    .then((prueba) => {
-      res.send(prueba);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.postPrueba(connection, data)
+      .then((prueba) => {
+        res.send(prueba);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 async function deletePruebaById(req, res) {
   const { id } = req.params;
-  pruebasModel.deletePruebaById(id)
-    .then((affectedRows) => {
-      if (affectedRows === 0) {
-        res.status(404);
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.deletePruebaById(connection, id)
+      .then((affectedRows) => {
+        if (affectedRows === 0) {
+          res.status(404);
+          res.send();
+          return;
+        }
         res.send();
-        return;
-      }
-      res.send();
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 async function getPruebaByFolio(req, res) {
@@ -106,17 +119,20 @@ async function getPruebaByFolio(req, res) {
     res.send({ err: 'Invalid user folio' });
     return;
   }
-  pruebasModel.getPruebaByFolio(folio)
-    .then((pruebas) => {
-      res.json(pruebas);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.getPruebaByFolio(connection, folio)
+      .then((pruebas) => {
+        res.json(pruebas);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 async function deletePruebaByFolio(req, res) {
@@ -127,22 +143,25 @@ async function deletePruebaByFolio(req, res) {
     res.send({ err: 'Invalid user folio' });
     return;
   }
-  pruebasModel.deletePruebaByFolio(folio)
-    .then((affectedRows) => {
-      if (affectedRows === 0) {
-        res.status(404);
-        res.send();
-        return;
-      }
-      res.send({ deleteCount: affectedRows });
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.deletePruebaByFolio(connection, folio)
+      .then((affectedRows) => {
+        if (affectedRows === 0) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.send({ deleteCount: affectedRows });
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 async function putPruebaById(req, res) {
@@ -163,17 +182,20 @@ async function putPruebaById(req, res) {
     return;
   }
 
-  pruebasModel.putPruebaById(id, data)
-    .then((prueba) => {
-      res.send(prueba);
-    })
-    .catch((err) => {
-      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
-        res.status(400).send(err.sqlMessage);
-      } else {
-        res.status(500).send(err);
-      }
-    });
+  executionContext((context) => {
+    const { connection } = context;
+    pruebasModel.putPruebaById(connection, id, data)
+      .then((esctrutinio) => {
+        res.send({ esctrutinio });
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 module.exports = {
