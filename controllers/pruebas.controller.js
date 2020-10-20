@@ -145,6 +145,37 @@ async function deletePruebaByFolio(req, res) {
     });
 }
 
+async function putPruebaById(req, res) {
+  const { id } = req.params;
+  const data = req.body;
+  const isValidFolio = validatorFolio.validateFolio(data.folio);
+
+  const validation = validator.validate(data);
+  if (!validation.valid) {
+    res.status(400);
+    res.json(validation.data);
+    return;
+  }
+
+  if (!isValidFolio) {
+    res.status(400);
+    res.send({ err: 'Invalid user folio' });
+    return;
+  }
+
+  pruebasModel.putPruebaById(id, data)
+    .then((prueba) => {
+      res.send(prueba);
+    })
+    .catch((err) => {
+      if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+        res.status(400).send(err.sqlMessage);
+      } else {
+        res.status(500).send(err);
+      }
+    });
+}
+
 module.exports = {
   getPruebas,
   getPruebaById,
@@ -152,4 +183,5 @@ module.exports = {
   deletePruebaById,
   getPruebaByFolio,
   deletePruebaByFolio,
+  putPruebaById,
 };

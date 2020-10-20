@@ -174,6 +174,31 @@ async function deletePruebaByFolio(folio) {
   });
 }
 
+async function putPruebaById(id, data) {
+  const connection = await getConnection();
+  const prueba = data;
+  const escrutinio = escrutinioCalculator.compute(prueba);
+  prueba.escrutinio = escrutinio;
+  delete prueba.folio;
+
+  const filter = {};
+  filter.idEncuesta = parseInt(id, 10);
+  return new Promise((resolve, reject) => {
+    const generatedQuery = queryGenerator.generateUpdateQuery('Actualizaciones', prueba, filter);
+    connection.query(
+      generatedQuery.query,
+      generatedQuery.values,
+      (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      },
+    );
+  });
+}
+
 module.exports = {
   getPruebas,
   getPruebaById,
@@ -181,4 +206,5 @@ module.exports = {
   deletePruebaById,
   getPruebaByFolio,
   deletePruebaByFolio,
+  putPruebaById,
 };
