@@ -4,6 +4,7 @@
 
 const usersModel = require('../db/users.model');
 const validator = require('../validators/users');
+const validatorFolio = require('../validators/folio');
 
 /**
 * @async
@@ -34,7 +35,7 @@ async function getUsers(req, res) {
 */
 async function getUserByFolio(req, res) {
   const { folio } = req.params;
-  const isValidFolio = validator.validateFolio(folio);
+  const isValidFolio = validatorFolio.validateFolio(folio);
   if (!isValidFolio) {
     res.status(400);
     res.send({ err: 'Invalid user folio' });
