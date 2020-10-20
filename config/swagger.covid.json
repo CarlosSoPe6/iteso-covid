@@ -696,157 +696,180 @@
             "properties": {
                 "folio": {
                     "type": "string",
-                    "description": "El folio del usuario"
+                    "description": "El folio del usuario",
+                    "required": true
                 },
                 "dolorSeveroPecho": {
                     "type": "integer",
                     "description": "1 Si tiene dolor de Pecho, 0 si NO tiene dolor de pecho",
                     "minimum": 0,
-                    "maximum": 1            
+                    "maximum": 1,
+                    "required": true         
                 },
                 "difExtremaRespirar": {
                     "type": "integer",
                     "description": "1 Si tiene dificultad extrama para respirar, 0 si NO tiene dificultad extrama para respirar",
                     "minimum": 0,
-                    "maximum": 1                 
+                    "maximum": 1,
+                    "required": true             
                 },
                 "desorientado": {
                     "type": "integer",
                     "description": "1 Si se encuentra desorientado , 0 si NO se encuentra desorientado",
                     "minimum": 0,
-                    "maximum": 1   
+                    "maximum": 1,
+                    "required": true 
                 },
                 "respEstimulos": {
                     "type": "integer",
                     "description": "1 Si se no tiene respuesta a estimulos o 0 si NO tiene respuesta a estimulos",
                     "minimum": 0,
-                    "maximum": 1   
+                    "maximum": 1 ,
+                    "required": true  
                 },
                 "olfato": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de la disminucion de olfato",
                     "minimum": 0,
-                    "maximum": 10
+                    "maximum": 10,
+                    "required": true
                 },
                 "gusto": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de la disminucion de gusto",
                     "minimum": 0,
-                    "maximum": 10
+                    "maximum": 10,
+                    "required": true
                 },
                 "fiebre": {
                     "type": "integer",
                     "format": "int32",
                     "description": ">38 ° tiene fiebre, si no sabe pongan 0",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "escalofrios": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de escalofrios",
                     "minimum": 0,
-                    "maximum": 10   
+                    "maximum": 10,
+                    "required": true
                 },
                 "respiracion": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de problemas para respirar",
                     "minimum": 0,
-                    "maximum": 10
+                    "maximum": 10,
+                    "required": true
                 },
                 "diarrea": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  diarrea",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "vomito": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  vomito",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "tos": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene tos",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "dolorMuscular": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 10, 0 como lo mas bajo y 10 como lo mas alto de si tiene dolor muscular y que tanto",
                     "minimum": 0,
-                    "maximum": 10
+                    "maximum": 10,
+                    "required": true
                 },
                 "dolorCabeza": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene de dolor de cabeza",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "irritacionOjos": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 a 1, 0 como lo mas bajo y 1 que si tiene  de irritacion de ojos",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "sangradoRespiratorio": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene sangrado resperiratorio",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "embarazada": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si esta embarazada",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "consumeTabaco": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si consume tabaco",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "enfCardiovascular": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene enfermedades cardiovasculares",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "diabetes": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene diabetes",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "cancer": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si tiene cancer",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 },
                 "obeso": {
                     "type": "integer",
                     "format": "int32",
                     "description": "0 o 1, 0 como lo mas bajo y 1 que si es obeso",
                     "minimum": 0,
-                    "maximum": 1
+                    "maximum": 1,
+                    "required": true
                 }
             },
             "xml": {
