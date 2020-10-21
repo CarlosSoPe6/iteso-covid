@@ -13,6 +13,8 @@ const pruebasRouter = require('./routes/pruebas.router');
 const usersRouter = require('./routes/users.router');
 const datosgovRouter = require('./routes/datosgov.router');
 
+app.use(express.json());
+
 app.use('/api/comunicaciones', comunicacionesRouter);
 app.use('/api/pruebas', pruebasRouter);
 app.use('/api/users', usersRouter);
