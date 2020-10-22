@@ -6,6 +6,7 @@ const usersModel = require('../db/users.model');
 const validator = require('../validators/users');
 const validatorFolio = require('../validators/folio');
 const { executionContext } = require('../db/executionContext');
+const encrypt = require('../config/encrypt');
 
 /**
 * @async
@@ -80,9 +81,24 @@ async function postUser(req, res) {
     res.json(validation.data);
     return;
   }
+  const {
+    Contrasenia,
+    Edad,
+    Sexo,
+    Latitud,
+    Longitud,
+  } = req.body;
+  const hash = await encrypt.hashPassword(Contrasenia);
+  const usuario = {
+    Contrasenia: hash,
+    Edad,
+    Sexo,
+    Latitud,
+    Longitud,
+  };
   executionContext((context) => {
     const { connection } = context;
-    usersModel.postUser(connection, req.body)
+    usersModel.postUser(connection, usuario)
       .then((users) => {
         res.status(200);
         res.send(users);

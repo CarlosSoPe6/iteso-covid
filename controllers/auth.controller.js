@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken');
 
 const singOptions = require('../config/jwtToken');
 const { executionContext } = require('../db/executionContext');
-const { getUserAuth } = require('../db/users.model');
+const { getUserByFolio } = require('../db/users.model');
 const encrypt = require('../config/encrypt');
 
 /**
@@ -19,5 +19,48 @@ const encrypt = require('../config/encrypt');
  * @param {import('express').Response} res Response parameter.
  */
 async function login(req, res) {
-  const { expediente, password } = req.body;
+  const { folio, contrasenia } = req.body;
+  if (folio === undefined || contrasenia === undefined) {
+    res.sendStatus(400);
+    return;
+  }
+  let usuarioResult = null;
+  try {
+    await executionContext(async (context) => {
+      const { connection } = context;
+      usuarioResult = await getUserByFolio(connection, folio);
+    });
+  } catch (e) {
+    res.status(500).send(e.message);
+    return;
+  }
+
+  if (usuarioResult === undefined) {
+    res.sendStatus(404);
+    return;
+  }
+
+  const userHash = usuarioResult.Contrasenia;
+  const hashCompareResult = await encrypt.comparePassword(contrasenia, userHash);
+  if (!hashCompareResult) {
+    res.status(401).send('BAD PASSWORD');
+    return;
+  }
+
+  jwt.sign(
+    { folio },
+    process.env.JWT_KEYPASS,
+    singOptions,
+    (err, encoded) => {
+      if (err) {
+        res.sendStatus(500);
+        return;
+      }
+      res.status(201).send({ encoded });
+    },
+  );
 }
+
+module.exports = {
+  login,
+};
