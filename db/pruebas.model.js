@@ -7,6 +7,7 @@ const QUERY_GET_PRUEBA_BY_ID = 'SELECT * FROM Actualizaciones WHERE idEncuesta =
 const QUERY_DELETE_PRUEBA_BY_ID = 'DELETE FROM Actualizaciones WHERE idEncuesta = ?';
 const QUERY_GET_PRUEBAS_BY_FOLIO = 'SELECT * FROM Actualizaciones WHERE idUsuario = ?';
 const QUERY_DELETE_PRUEBA_BY_FOLIO = 'DELETE FROM Actualizaciones WHERE idUsuario = ?';
+const QUERY_AUTHZ = 'SELECT idEncuesta, idUsuario FROM Actualizaciones WHERE idUsuario=? AND idEncuesta=?';
 
 /**
  * Obtiene todas las pruebas de la base de datos.
@@ -195,6 +196,32 @@ async function putPruebaById(connection, id, data) {
   });
 }
 
+async function verifyAccess(connection, resourceId, accessorId) {
+  const userId = userHash.getIdFromFolio(accessorId);
+  const dataToEscape = [
+    userId,
+    resourceId,
+  ];
+  console.log(dataToEscape);
+  return new Promise((resolve, reject) => {
+    connection.query(
+      QUERY_AUTHZ,
+      dataToEscape,
+      (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        if (results.length === 0) {
+          resolve(false);
+          return;
+        }
+        resolve(true);
+      },
+    );
+  });
+}
+
 module.exports = {
   getPruebas,
   getPruebaById,
@@ -203,4 +230,5 @@ module.exports = {
   getPruebaByFolio,
   deletePruebaByFolio,
   putPruebaById,
+  verifyAccess,
 };
