@@ -4,11 +4,11 @@
  * Módulo main del proyecto iteso-covid
  */
 const express = require('express');
-const bodyParser = require('body-parser');
 
 const port = process.env.PORT || 3000;
 const app = express();
 
+const authRouter = require('./routes/auth.router');
 const comunicacionesRouter = require('./routes/comunicaciones.router');
 const pruebasRouter = require('./routes/pruebas.router');
 const usersRouter = require('./routes/users.router');
@@ -19,7 +19,9 @@ const mapaRouter = require('./routes/mapa.router');
 const jsonParser = bodyParser.json();
 
 app.use(jsonParser);
+app.use(express.json());
 
+app.use('/api/auth', authRouter);
 app.use('/api/comunicaciones', comunicacionesRouter);
 app.use('/api/pruebas', pruebasRouter);
 app.use('/api/users', usersRouter);
