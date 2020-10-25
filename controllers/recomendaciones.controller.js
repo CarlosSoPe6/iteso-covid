@@ -1,4 +1,4 @@
-const model = require('../db/datosgov.model');
+const model = require('../db/recomendaciones.model');
 
 // const validator = require('../validators/');
 
@@ -9,25 +9,9 @@ const model = require('../db/datosgov.model');
  * @param {import('express').Request} req Request parameter.
  * @param {import('express').Response} res Response parameter.
  */
-async function getAllDatagovFromAll(req, res) {
+async function getAllTips(req, res) {
   try {
-    const data = await model.getAllFromAll();
-    res.json(data);
-  } catch (e) {
-    res.status(500).send();
-  }
-}
-
-/**
- * GET
- * @async
- * @exports
- * @param {import('express').Request} req Request parameter.
- * @param {import('express').Response} res Response parameter.
- */
-async function getLatestDatagovFromAll(req, res) {
-  try {
-    const data = await model.getLatestFromAll();
+    const data = await model.getAll();
     res.json(data);
   } catch (e) {
     res.status(500).send();
@@ -41,12 +25,12 @@ async function getLatestDatagovFromAll(req, res) {
  * @param {import('express').Request} req Request parameter.
  * @param {import('express').Response} res Response parameter.
  */
-async function postNewDatagov(req, res) {
+async function postNewTip(req, res) {
   try {
     const data = await model.postNew(req.body);
     res.json(data);
   } catch (e) {
-    console.log(e);
+      console.log(e);
     res.status(500).send();
   }
 }
@@ -58,11 +42,46 @@ async function postNewDatagov(req, res) {
  * @param {import('express').Request} req Request parameter.
  * @param {import('express').Response} res Response parameter.
  */
-async function getLatestDatagovByEntity(req, res) {
-  const { entidad } = req.params;
-
+async function getTipByID(req, res) {
+  const { id } = req.params;
   try {
-    const data = await model.getLatestByEntity(entidad);
+    const data = await model.getByID(id);
+    res.json(data);
+  } catch (e) {
+      console.log(e);
+    res.status(500).send();
+  }
+}
+
+/**
+ * PUT
+ * @async
+ * @exports
+ * @param {import('express').Request} req Request parameter.
+ * @param {import('express').Response} res Response parameter.
+ */
+async function putTipByID(req, res) {
+  const { id } = req.params;
+  try {
+    const data = await model.putByID(id, req.body);
+    res.json(data);
+  } catch (e) {
+      console.log(e);
+    res.status(500).send();
+  }
+}
+
+/**
+ * DELETE
+ * @async
+ * @exports
+ * @param {import('express').Request} req Request parameter.
+ * @param {import('express').Response} res Response parameter.
+ */
+async function deleteTipByID(req, res) {
+  const { id } = req.params;
+  try {
+    const data = await model.deleteByID(id);
     res.json(data);
   } catch (e) {
     console.log(e);
@@ -77,64 +96,22 @@ async function getLatestDatagovByEntity(req, res) {
  * @param {import('express').Request} req Request parameter.
  * @param {import('express').Response} res Response parameter.
  */
-async function getAllDatagovByEntity(req, res) {
-  const { entidad } = req.params;
+async function getTipByNivel(req, res) {
+  const { nivel } = req.params;
   try {
-    const data = await model.getAllByEntity(entidad);
+    const data = await model.getByNivel(nivel);
     res.json(data);
   } catch (e) {
-    res.status(500).send();
-  }
-}
-
-/**
- * GET
- * @async
- * @exports
- * @param {import('express').Request} req Request parameter.
- * @param {import('express').Response} res Response parameter.
- */
-async function getDatagovFromAllBySpecificDate(req, res) {
-  const { anio } = req.params;
-  const { mes } = req.params;
-  const { dia } = req.params;
-
-  try {
-    const data = await model.getFromAllBySpecificDate(anio, mes, dia);
-    res.json(data);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send();
-  }
-}
-
-/**
- * GET
- * @async
- * @exports
- * @param {import('express').Request} req Request parameter.
- * @param {import('express').Response} res Response parameter.
- */
-async function getDatagovByEntityBySpecificDate(req, res) {
-  const { anio } = req.params;
-  const { mes } = req.params;
-  const { dia } = req.params;
-  const { entidad } = req.params;
-
-  try {
-    const data = await model.getByEntityBySpecificDate(entidad, anio, mes, dia);
-    res.json(data);
-  } catch (e) {
+      console.log(e);
     res.status(500).send();
   }
 }
 
 module.exports = {
-  getAllDatagovFromAll,
-  getLatestDatagovFromAll,
-  postNewDatagov,
-  getLatestDatagovByEntity,
-  getAllDatagovByEntity,
-  getDatagovFromAllBySpecificDate,
-  getDatagovByEntityBySpecificDate,
+  getAllTips,
+  postNewTip,
+  getTipByID,
+  putTipByID,
+  deleteTipByID,
+  getTipByNivel,
 };
