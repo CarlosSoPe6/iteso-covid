@@ -16,9 +16,6 @@ const datosgovRouter = require('./routes/datosgov.router');
 const recomendacionesRouter = require('./routes/recomendaciones.router');
 const mapaRouter = require('./routes/mapa.router');
 
-const jsonParser = bodyParser.json();
-
-app.use(jsonParser);
 app.use(express.json());
 
 app.use('/api/auth', authRouter);
