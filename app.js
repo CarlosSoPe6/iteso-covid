@@ -18,13 +18,13 @@ const mapaRouter = require('./routes/mapa.router');
 
 app.use(express.json());
 
-app.use('/api/auth', authRouter);
-app.use('/api/comunicaciones', comunicacionesRouter);
-app.use('/api/pruebas', pruebasRouter);
-app.use('/api/users', usersRouter);
-app.use('/api/datosgov', datosgovRouter);
-app.use('/api/recomendaciones', recomendacionesRouter);
-app.use('/api/mapa', mapaRouter);
+app.use('/covid/api/auth', authRouter);
+app.use('/covid/api/comunicaciones', comunicacionesRouter);
+app.use('/covid/api/pruebas', pruebasRouter);
+app.use('/covid/api/users', usersRouter);
+app.use('/covid/api/datosgov', datosgovRouter);
+app.use('/covid/api/recomendaciones', recomendacionesRouter);
+app.use('/covid/api/mapa', mapaRouter);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
