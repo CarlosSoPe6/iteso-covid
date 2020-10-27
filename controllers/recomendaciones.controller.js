@@ -1,7 +1,6 @@
 const model = require('../db/recomendaciones.model');
-
-// const validator = require('../validators/');
-
+const { executionContext } = require('../db/executionContext');
+const validator = require('../validators/recomendacion');
 /**
  * GET
  * @async
@@ -10,12 +9,21 @@ const model = require('../db/recomendaciones.model');
  * @param {import('express').Response} res Response parameter.
  */
 async function getAllTips(req, res) {
-  try {
-    const data = await model.getAll();
-    res.json(data);
-  } catch (e) {
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getAll(connection)
+      .then((tips) => {
+        res.statusCode = 200;
+        res.send(tips);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -26,13 +34,27 @@ async function getAllTips(req, res) {
  * @param {import('express').Response} res Response parameter.
  */
 async function postNewTip(req, res) {
-  try {
-    const data = await model.postNew(req.body);
-    res.json(data);
-  } catch (e) {
-      console.log(e);
-    res.status(500).send();
+  const data = req.body;
+  const validation = validator.validate(data);
+  if (!validation.valid) {
+    res.status(400);
+    res.json(validation.data);
+    return;
   }
+  executionContext((context) => {
+    const { connection } = context;
+    model.postNew(connection, data)
+      .then((tip) => {
+        res.send(tip);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -44,13 +66,26 @@ async function postNewTip(req, res) {
  */
 async function getTipByID(req, res) {
   const { id } = req.params;
-  try {
-    const data = await model.getByID(id);
-    res.json(data);
-  } catch (e) {
-      console.log(e);
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getByID(connection, id)
+      .then((tip) => {
+        if (tip === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(tip);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -62,13 +97,27 @@ async function getTipByID(req, res) {
  */
 async function putTipByID(req, res) {
   const { id } = req.params;
-  try {
-    const data = await model.putByID(id, req.body);
-    res.json(data);
-  } catch (e) {
-      console.log(e);
-    res.status(500).send();
+  const data = req.body;
+  const validation = validator.validate(data);
+  if (!validation.valid) {
+    res.status(400);
+    res.json(validation.data);
+    return;
   }
+  executionContext((context) => {
+    const { connection } = context;
+    model.putByID(connection, id, data)
+      .then((tip) => {
+        res.send(tip);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -80,13 +129,26 @@ async function putTipByID(req, res) {
  */
 async function deleteTipByID(req, res) {
   const { id } = req.params;
-  try {
-    const data = await model.deleteByID(id);
-    res.json(data);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.deleteByID(connection, id)
+      .then((tip) => {
+        if (tip === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(tip);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -98,13 +160,26 @@ async function deleteTipByID(req, res) {
  */
 async function getTipByNivel(req, res) {
   const { nivel } = req.params;
-  try {
-    const data = await model.getByNivel(nivel);
-    res.json(data);
-  } catch (e) {
-      console.log(e);
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getByNivel(connection, nivel)
+      .then((tip) => {
+        if (tip === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(tip);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 module.exports = {

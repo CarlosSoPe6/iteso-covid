@@ -16,7 +16,7 @@
         "http"
     ],
     "paths": {
-        "/covidV2020/api/pruebas": {
+        "/covid/api/pruebas": {
             "get": {
                 "tags": [
                     "Pruebas"
@@ -76,7 +76,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/id/{id}": {
+        "/covid/api/actual/id/{id}": {
             "get": {
                 "tags": [
                     "Pruebas"
@@ -180,7 +180,7 @@
                 }
             }
         },
-        "/covidV2020/api/actual/folio/{folio}": {
+        "/covid/api/actual/folio/{folio}": {
             "get": {
                 "tags": [
                     "Pruebas"
@@ -251,7 +251,7 @@
                 }
             }
         },
-        "/covidV2020/api/recom": {
+        "/covid/api/recom": {
             "get": {
                 "tags": [
                     "Recomendaciones"
@@ -312,7 +312,7 @@
                 }
             }
         },
-        "/covidV2020/api/recom/nivel/{id}": {
+        "/covid/api/recom/nivel/{id}": {
             "get": {
                 "tags": [
                     "Recomendaciones"
@@ -343,7 +343,7 @@
                 }
             }
         },
-        "/covidV2020/api/recom/{id}": {
+        "/covid/api/recom/{id}": {
             "get": {
                 "tags": [
                     "Recomendaciones"
@@ -426,7 +426,7 @@
                 }
             }
         },
-        "/covidV2020/api/comunicaciones": {
+        "/covid/api/comunicaciones": {
             "get": {
                 "tags": [
                     "Comunicaciones"
@@ -486,7 +486,7 @@
                 }
             }
         },
-        "/covidV2020/api/comunicaciones/{id}": {
+        "/covid/api/comunicaciones/{id}": {
             "get": {
                 "tags": [
                     "Comunicaciones"
@@ -566,12 +566,12 @@
                 }
             }
         },
-        "/covidV2020/api/gobierno": {
+        "/covid/api/datosgov": {
             "get": {
                 "tags": [
                     "Datos del gobierno"
                 ],
-                "summary": "Obtener todas los datos actuales del gobierno que se tienen en la BDD",
+                "summary": "Obtener todos los datos del gobierno que se tienen en la BDD",
                 "description": "",
                 "operationId": "getDatosGovierno",
                 "produces": [
@@ -624,20 +624,20 @@
                 }
             }
         },
-        "/covidV2020/api/gobierno/{clave_Entidad}": {
+        "/covid/api/datosgov/todos": {
             "get": {
                 "tags": [
                     "Datos del gobierno"
                 ],
-                "summary": "Obtener por fehca",
+                "summary": "Obtener el más reciente de todas las entidades",
                 "description": "",
-                "operationId": "getDatosGovEstadoClave",
+                "operationId": "getDatosGovEstadoClaveZZ",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "clave_Entidad",
+                        "name": "entidad",
                         "in": "path",
                         "type": "integer",
                         "required": true
@@ -657,7 +657,73 @@
                 }
             }
         },
-        "/covidV2020/api/gobierno/fecha/{fecha}": {
+        "/covid/api/datosgov/entidad/{entidad}": {
+            "get": {
+                "tags": [
+                    "Datos del gobierno"
+                ],
+                "summary": "Obtener más recientes por entidad",
+                "description": "",
+                "operationId": "getDatosGovEstadoClave",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "entidad",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "$ref": "#/definitions/DatosGobierno"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/covid/api/datosgov/entidad/{entidad}/todos": {
+            "get": {
+                "tags": [
+                    "Datos del gobierno"
+                ],
+                "summary": "Obtener todos los registros de una entidad",
+                "description": "",
+                "operationId": "getDatosGovEstadoClave2",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "entidad",
+                        "in": "path",
+                        "type": "string",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "$ref": "#/definitions/DatosGobierno"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/covid/api/datosgov/fecha/{anio}/{mes}/{dia}": {
             "get": {
                 "tags": [
                     "Datos del gobierno"
@@ -670,9 +736,71 @@
                 ],
                 "parameters": [
                     {
-                        "name": "fecha",
+                        "name": "anio",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "mes",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "dia",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DatosGobierno"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                }
+            }
+        },
+        "/covid/api/datosgov/entidad/{entidad}/fecha/{anio}/{mes}/{dia}": {
+            "get": {
+                "tags": [
+                    "Datos del gobierno"
+                ],
+                "summary": "Obtener datos de una entidad en una fecha",
+                "description": "",
+                "operationId": "getDatosGovEstadoFechaZ",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "entidad",
                         "in": "path",
                         "type": "string",
+                        "required": true
+                    },
+                    {
+                        "name": "anio",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "mes",
+                        "in": "path",
+                        "type": "integer",
+                        "required": true
+                    },
+                    {
+                        "name": "dia",
+                        "in": "path",
+                        "type": "integer",
                         "required": true
                     }
                 ],
