@@ -28,7 +28,7 @@ app.use('/covid/api/mapa', mapaRouter);
 
 app.listen(port, () => {
   // eslint-disable-next-line no-console
-  console.log(`Application running on port ${port} with ${process.env.NODE_ENV} envrioment`);
+  console.log(`Application running on port ${port} with ${process.env.NODE_ENV} environment`);
 });
 
 module.exports = app;
