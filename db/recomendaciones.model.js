@@ -1,10 +1,13 @@
-const { getConnection } = require('../config/dbConfig');
+const QUERY_GET_ALL = 'SELECT * FROM Recomendaciones';
+const QUERY_POST = 'INSERT INTO Recomendaciones (nivelRecomendaciones, descripcion) VALUES (?, ?)';
+const QUERY_GET_BY_ID = 'SELECT * FROM Recomendaciones WHERE IdRecomendaciones = ?';
+const QUERY_PUT_BY_ID = 'UPDATE Recomendaciones SET nivelRecomendaciones = ?, descripcion = ? WHERE IdRecomendaciones = ?';
+const QUERY_DELETE_BY_ID = 'DELETE FROM Recomendaciones WHERE IdRecomendaciones = ?';
+const QUERY_GET_BY_NIVEL = 'SELECT * FROM Recomendaciones WHERE nivelRecomendaciones = ?';
 
-async function getAll() {
-  const connection = await getConnection();
-
+async function getAll(connection) {
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM Recomendaciones', (err, results) => {
+    connection.query(QUERY_GET_ALL, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -14,13 +17,9 @@ async function getAll() {
   });
 }
 
-async function postNew(body) {
-  const connection = await getConnection();
-
+async function postNew(connection, body) {
   return new Promise((resolve, reject) => {
-    const q = `INSERT INTO Recomendaciones (nivelRecomendaciones, descripcion) VALUES (${body.nivel}, '${body.descripcion}')`;
-
-    connection.query(q, (err, results) => {
+    connection.query(QUERY_POST, [body.nivel, body.descripcion], (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -30,11 +29,9 @@ async function postNew(body) {
   });
 }
 
-async function getByID(id) {
-  const connection = await getConnection();
-
+async function getByID(connection, id) {
   return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM Recomendaciones WHERE IdRecomendaciones = ${id}`, (err, results) => {
+    connection.query(QUERY_GET_BY_ID, id, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -44,11 +41,9 @@ async function getByID(id) {
   });
 }
 
-async function putByID(id, body) {
-  const connection = await getConnection();
-
+async function putByID(connection, id, body) {
   return new Promise((resolve, reject) => {
-    connection.query(`UPDATE Recomendaciones SET nivelRecomendaciones = ${body.nivel}, descripcion = '${body.descripcion}' WHERE IdRecomendaciones = ${id}`, (err, results) => {
+    connection.query(QUERY_PUT_BY_ID, [body.nivel, body.descripcion, id], (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -58,11 +53,9 @@ async function putByID(id, body) {
   });
 }
 
-async function deleteByID(id) {
-  const connection = await getConnection();
-
+async function deleteByID(connection, id) {
   return new Promise((resolve, reject) => {
-    connection.query(`DELETE FROM Recomendaciones WHERE IdRecomendaciones = ${id}`, (err, results) => {
+    connection.query(QUERY_DELETE_BY_ID, id, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -72,11 +65,9 @@ async function deleteByID(id) {
   });
 }
 
-async function getByNivel(nivel) {
-  const connection = await getConnection();
-
+async function getByNivel(connection, nivel) {
   return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM Recomendaciones WHERE nivelRecomendaciones = ${nivel}`, (err, results) => {
+    connection.query(QUERY_GET_BY_NIVEL, nivel, (err, results) => {
       if (err) {
         reject(err);
         return;

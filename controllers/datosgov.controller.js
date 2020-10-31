@@ -1,4 +1,6 @@
 const model = require('../db/datosgov.model');
+const { executionContext } = require('../db/executionContext');
+const validator = require('../validators/datogov');
 
 // const validator = require('../validators/');
 
@@ -10,12 +12,21 @@ const model = require('../db/datosgov.model');
  * @param {import('express').Response} res Response parameter.
  */
 async function getAllDatagovFromAll(req, res) {
-  try {
-    const data = await model.getAllFromAll();
-    res.json(data);
-  } catch (e) {
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getAllFromAll(connection)
+      .then((data) => {
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -26,12 +37,21 @@ async function getAllDatagovFromAll(req, res) {
  * @param {import('express').Response} res Response parameter.
  */
 async function getLatestDatagovFromAll(req, res) {
-  try {
-    const data = await model.getLatestFromAll();
-    res.json(data);
-  } catch (e) {
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getLatestFromAll(connection)
+      .then((data) => {
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -42,13 +62,27 @@ async function getLatestDatagovFromAll(req, res) {
  * @param {import('express').Response} res Response parameter.
  */
 async function postNewDatagov(req, res) {
-  try {
-    const data = await model.postNew(req.body);
-    res.json(data);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send();
+  const data = req.body;
+  const validation = validator.validate(data);
+  if (!validation.valid) {
+    res.status(400);
+    res.json(validation.data);
+    return;
   }
+  executionContext((context) => {
+    const { connection } = context;
+    model.postNew(connection, data)
+      .then((datagov) => {
+        res.send(datagov);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 /**
@@ -60,16 +94,27 @@ async function postNewDatagov(req, res) {
  */
 async function getLatestDatagovByEntity(req, res) {
   const { entidad } = req.params;
-
-  try {
-    const data = await model.getLatestByEntity(entidad);
-    res.json(data);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getLatestByEntity(connection, entidad)
+      .then((data) => {
+        if (data === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
-
 /**
  * GET
  * @async
@@ -79,14 +124,27 @@ async function getLatestDatagovByEntity(req, res) {
  */
 async function getAllDatagovByEntity(req, res) {
   const { entidad } = req.params;
-  try {
-    const data = await model.getAllByEntity(entidad);
-    res.json(data);
-  } catch (e) {
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getAllByEntity(connection, entidad)
+      .then((data) => {
+        if (data === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
-
 /**
  * GET
  * @async
@@ -98,16 +156,27 @@ async function getDatagovFromAllBySpecificDate(req, res) {
   const { anio } = req.params;
   const { mes } = req.params;
   const { dia } = req.params;
-
-  try {
-    const data = await model.getFromAllBySpecificDate(anio, mes, dia);
-    res.json(data);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getFromAllBySpecificDate(connection, anio, mes, dia)
+      .then((data) => {
+        if (data === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
-
 /**
  * GET
  * @async
@@ -116,17 +185,30 @@ async function getDatagovFromAllBySpecificDate(req, res) {
  * @param {import('express').Response} res Response parameter.
  */
 async function getDatagovByEntityBySpecificDate(req, res) {
+  const { entidad } = req.params;
   const { anio } = req.params;
   const { mes } = req.params;
   const { dia } = req.params;
-  const { entidad } = req.params;
-
-  try {
-    const data = await model.getByEntityBySpecificDate(entidad, anio, mes, dia);
-    res.json(data);
-  } catch (e) {
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    model.getByEntityBySpecificDate(connection, entidad, anio, mes, dia)
+      .then((data) => {
+        if (data === undefined) {
+          res.status(404);
+          res.send();
+          return;
+        }
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 module.exports = {
