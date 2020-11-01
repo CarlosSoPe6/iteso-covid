@@ -1,9 +1,14 @@
-const { getConnection } = require('../config/dbConfig');
+const QUERY_GET_ALL = 'SELECT * FROM datosgob';
+const QUERY_GET_LATEST_FROM_ALL = 'SELECT * FROM datosgob d INNER JOIN (SELECT Estado, MAX(fecha) AS MaxDate FROM datosgob GROUP BY estado) dg ON d.Estado = dg.Estado AND d.fecha = dg.MaxDate';
+const QUERY_POST = 'INSERT INTO datosgob (fecha, Estado, Confirmados, Negativos, Sospechosos, Defunciones, Recuperados, Activos, Extra) VALUES (CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?)';
+const QUERY_GET_LATEST_BY_ESTADO = 'SELECT * FROM datosgob d INNER JOIN (SELECT Estado, MAX(fecha) AS MaxDate FROM datosgob WHERE Estado = ?) dg ON d.Estado = dg.Estado AND d.fecha = dg.MaxDate';
+const QUERY_GET_ALL_BY_ESTADO = 'SELECT * FROM datosgob WHERE Estado = ?';
+const QUERY_GET_BY_DATE = 'SELECT * FROM datosgob WHERE DATE(fecha) = ?';
+const QUERY_GET_BY_DATE_AND_ESTADO = 'SELECT * FROM datosgob WHERE DATE(fecha) = ? && Estado = ?';
 
-async function getAllFromAll() {
-  const connection = await getConnection();
+async function getAllFromAll(connection) {
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM datosgob', (err, results) => {
+    connection.query(QUERY_GET_ALL, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -13,10 +18,9 @@ async function getAllFromAll() {
   });
 }
 
-async function getLatestFromAll() {
-  const connection = await getConnection();
+async function getLatestFromAll(connection) {
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM datosgob WHERE fecha IN (SELECT MAX(fecha) FROM datosgob GROUP BY Estado) ORDER BY Estado', (err, results) => {
+    connection.query(QUERY_GET_LATEST_FROM_ALL, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -26,11 +30,24 @@ async function getLatestFromAll() {
   });
 }
 
-async function postNew(data) {
-  const connection = await getConnection();
+async function postNew(connection, data) {
   return new Promise((resolve, reject) => {
-    const q = `INSERT INTO datosgob (fecha, Estado, Confirmados, Negativos, Sospechosos, Defunciones, Recuperados, Activos, Extra) VALUES (CURDATE(), '${data.estado}', ${data.confirmados}, ${data.negativos}, ${data.sospechosos}, ${data.defunciones}, ${data.recuperados}, ${data.activos}, '${data.extra}')`;
-    connection.query(q, (err, results) => {
+    connection.query(QUERY_POST,
+      [data.estado, data.confirmados, data.negativos, data.sospechosos,
+        data.defunciones, data.recuperados, data.activos, data.extra],
+      (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
+  });
+}
+
+async function getLatestByEntity(connection, estado) {
+  return new Promise((resolve, reject) => {
+    connection.query(QUERY_GET_LATEST_BY_ESTADO, estado, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -40,10 +57,9 @@ async function postNew(data) {
   });
 }
 
-async function getLatestByEntity(estado) {
-  const connection = await getConnection();
+async function getAllByEntity(connection, estado) {
   return new Promise((resolve, reject) => {
-    connection.query(`SELECT MAX(fecha) as fecha, id, Estado, Confirmados, Negativos, Sospechosos, Defunciones, Recuperados, Activos, Extra FROM datosgob WHERE Estado = '${estado}'`, (err, results) => {
+    connection.query(QUERY_GET_ALL_BY_ESTADO, estado, (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -53,25 +69,10 @@ async function getLatestByEntity(estado) {
   });
 }
 
-async function getAllByEntity(estado) {
-  const connection = await getConnection();
-  return new Promise((resolve, reject) => {
-    connection.query(`SELECT * FROM datosgob WHERE Estado = '${estado}'`, (err, results) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(results);
-    });
-  });
-}
-
-async function getFromAllBySpecificDate(anio, mes, dia) {
-  const connection = await getConnection();
-
+async function getFromAllBySpecificDate(connection, anio, mes, dia) {
   const d = new Date(anio, mes - 1, dia);
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM datosgob WHERE DATE(fecha) = ?', [d], (err, results) => {
+    connection.query(QUERY_GET_BY_DATE, [d], (err, results) => {
       if (err) {
         reject(err);
         return;
@@ -81,13 +82,11 @@ async function getFromAllBySpecificDate(anio, mes, dia) {
   });
 }
 
-async function getByEntityBySpecificDate(estado, anio, mes, dia) {
-  const connection = await getConnection();
-
+async function getByEntityBySpecificDate(connection, estado, anio, mes, dia) {
   const d = new Date(anio, mes - 1, dia);
 
   return new Promise((resolve, reject) => {
-    connection.query('SELECT * FROM datosgob WHERE DATE(fecha) = ? && Estado = ?', [d, estado], (err, results) => {
+    connection.query(QUERY_GET_BY_DATE_AND_ESTADO, [d, estado], (err, results) => {
       if (err) {
         reject(err);
         return;
