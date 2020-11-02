@@ -1,7 +1,5 @@
 const model = require('../db/mapa.model');
-
-// const validator = require('../validators/');
-
+const { executionContext } = require('../db/executionContext');
 /**
  * GET
  * @async
@@ -10,14 +8,22 @@ const model = require('../db/mapa.model');
  * @param {import('express').Response} res Response parameter.
  */
 async function getMapaRadio(req, res) {
-  const { radio } = req.params;
-  try {
-    const data = await model.getByRadio(radio);
-    res.json(data);
-  } catch (e) {
-    console.log(e);
-    res.status(500).send();
-  }
+  executionContext((context) => {
+    const { connection } = context;
+    const { radio } = req.params;
+    model.getByRadio(connection, radio)
+      .then((data) => {
+        res.statusCode = 200;
+        res.send(data);
+      })
+      .catch((err) => {
+        if (Object.prototype.hasOwnProperty.call(err, 'sqlMessage')) {
+          res.status(400).send(err.sqlMessage);
+        } else {
+          res.status(500).send(err);
+        }
+      });
+  });
 }
 
 module.exports = {

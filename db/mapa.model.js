@@ -1,7 +1,6 @@
-const { getConnection } = require('../config/dbConfig');
+const QUERY_GET_BY_RADIO = 'SELECT actualizaciones.escrutinio, ROUND(usuarios.latitud, ?) AS latitud, ROUND(usuarios.longitud, ?) AS longitud, COUNT(*) as count FROM actualizaciones JOIN usuarios ON usuarios.IDUsuario = actualizaciones.idUsuario WHERE actualizaciones.escrutinio > 1 GROUP BY ROUND(usuarios.longitud, ?), ROUND(usuarios.latitud, ?), actualizaciones.escrutinio ORDER BY actualizaciones.escrutinio';
 
-async function getByRadio(radio) {
-  const connection = await getConnection();
+async function getByRadio(connection, radio) {
   return new Promise((resolve, reject) => {
     let decimals;
     switch (radio) {
@@ -17,13 +16,14 @@ async function getByRadio(radio) {
       default:
         decimals = 6;
     }
-    connection.query('SELECT actualizaciones.escrutinio, ROUND(usuarios.latitud, ?) AS latitud, ROUND(usuarios.longitud, ?) AS longitud, COUNT(*) as count FROM actualizaciones JOIN usuarios ON usuarios.IDUsuario = actualizaciones.idUsuario WHERE actualizaciones.escrutinio > 1 GROUP BY ROUND(usuarios.longitud, ?), ROUND(usuarios.latitud, ?), actualizaciones.escrutinio ORDER BY actualizaciones.escrutinio', [decimals, decimals, decimals, decimals], (err, results) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(results);
-    });
+    connection.query(QUERY_GET_BY_RADIO,
+      [decimals, decimals, decimals, decimals], (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(results);
+      });
   });
 }
 
