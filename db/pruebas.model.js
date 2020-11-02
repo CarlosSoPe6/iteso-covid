@@ -77,6 +77,7 @@ async function postPrueba(connection, data) {
   prueba.escrutinio = escrutinio;
   delete prueba.folio;
 
+  
   return new Promise((resolve, reject) => {
     const query = queryGenerator.generateInsertQuery('Actualizaciones', prueba);
     connection.query(
