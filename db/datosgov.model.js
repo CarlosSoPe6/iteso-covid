@@ -1,10 +1,10 @@
-const QUERY_GET_ALL = 'SELECT * FROM datosgob';
-const QUERY_GET_LATEST_FROM_ALL = 'SELECT * FROM datosgob d INNER JOIN (SELECT Estado, MAX(fecha) AS MaxDate FROM datosgob GROUP BY estado) dg ON d.Estado = dg.Estado AND d.fecha = dg.MaxDate';
-const QUERY_POST = 'INSERT INTO datosgob (fecha, Estado, Confirmados, Negativos, Sospechosos, Defunciones, Recuperados, Activos, Extra) VALUES (CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?)';
-const QUERY_GET_LATEST_BY_ESTADO = 'SELECT * FROM datosgob d INNER JOIN (SELECT Estado, MAX(fecha) AS MaxDate FROM datosgob WHERE Estado = ?) dg ON d.Estado = dg.Estado AND d.fecha = dg.MaxDate';
-const QUERY_GET_ALL_BY_ESTADO = 'SELECT * FROM datosgob WHERE Estado = ?';
-const QUERY_GET_BY_DATE = 'SELECT * FROM datosgob WHERE DATE(fecha) = ?';
-const QUERY_GET_BY_DATE_AND_ESTADO = 'SELECT * FROM datosgob WHERE DATE(fecha) = ? && Estado = ?';
+const QUERY_GET_ALL = 'SELECT * FROM datosGob';
+const QUERY_GET_LATEST_FROM_ALL = 'SELECT * FROM datosGob d INNER JOIN (SELECT Estado, MAX(fecha) AS MaxDate FROM datosGob GROUP BY estado) dg ON d.Estado = dg.Estado AND d.fecha = dg.MaxDate';
+const QUERY_POST = 'INSERT INTO datosGob (fecha, Estado, Confirmados, Negativos, Sospechosos, Defunciones, Recuperados, Activos, Extra) VALUES (CURDATE(), ?, ?, ?, ?, ?, ?, ?, ?)';
+const QUERY_GET_LATEST_BY_ESTADO = 'SELECT * FROM datosGob d INNER JOIN (SELECT Estado, MAX(fecha) AS MaxDate FROM datosGob WHERE Estado = ?) dg ON d.Estado = dg.Estado AND d.fecha = dg.MaxDate';
+const QUERY_GET_ALL_BY_ESTADO = 'SELECT * FROM datosGob WHERE Estado = ?';
+const QUERY_GET_BY_DATE = 'SELECT * FROM datosGob WHERE DATE(fecha) = ?';
+const QUERY_GET_BY_DATE_AND_ESTADO = 'SELECT * FROM datosGob WHERE DATE(fecha) = ? && Estado = ?';
 
 async function getAllFromAll(connection) {
   return new Promise((resolve, reject) => {
