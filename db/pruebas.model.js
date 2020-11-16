@@ -9,14 +9,14 @@ const QUERY_GET_PRUEBAS_BY_FOLIO = 'SELECT * FROM Actualizaciones WHERE idUsuari
 const QUERY_DELETE_PRUEBA_BY_FOLIO = 'DELETE FROM Actualizaciones WHERE idUsuario = ?';
 const QUERY_AUTHZ = 'SELECT idEncuesta, idUsuario FROM Actualizaciones WHERE idUsuario=? AND idEncuesta=?';
 const QUERY_DATE_GROUP = `SELECT 
-a.fechaCreacion, 
+a.fechaCreacion as fecha, 
   COUNT(a.idEncuesta) as total,
   SUM(CASE WHEN u.Sexo > 0 THEN 1 ELSE 0 END)  as totalMasculino,
   SUM(CASE WHEN u.Sexo > 0 THEN 0 ELSE 1 END)  as totalFemenino
 FROM Actualizaciones a
-JOIN Usuarios u ON a.idUsuario = u.IDUsuario
-GROUP BY fechaCreacion
-WHERE a.fechaCreacion BETWEEN ? AND ?;`;
+JOIN Usuarios u ON a.idUsuario = u.IDUsuario 
+WHERE a.fechaCreacion BETWEEN ? AND ?
+GROUP BY fecha;`;
 
 /**
  * Obtiene todas las pruebas de la base de datos.
@@ -244,7 +244,7 @@ async function getDateGroup(connection, start, end) {
           reject(err);
           return;
         }
-        resolve(results.affectedRows);
+        resolve(results);
       },
     );
   });
