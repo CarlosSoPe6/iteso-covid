@@ -11,7 +11,7 @@ describe('AUTH', () => {
         contrasenia: process.env.TEST_PASSWORD,
       })
       .then((response) => {
-        expect(response).toBe(201);
+        expect(response.status).toBe(201);
       })
       .finally(() => done());
   });
