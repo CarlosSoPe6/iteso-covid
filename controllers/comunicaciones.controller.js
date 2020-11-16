@@ -27,7 +27,7 @@ async function getAllComunicaciones(req, res) {
 async function postComunicacion(req, res) {
   const validation = validator.validate(req.body);
   if (!validation.valid) {
-    res.status(400).send(validation.data);
+    res.status(400).json(validation.data).end();
     return;
   }
   try {
