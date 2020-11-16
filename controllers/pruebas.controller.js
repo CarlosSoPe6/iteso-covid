@@ -207,12 +207,13 @@ async function getCasosByDate(req, res) {
   const {
     dtStart,
     dtEnd,
-  } = req.quey;
+  } = req.query;
+  console.log(req.query);
   let start;
   let end;
   if (dtStart === undefined) {
     // Primer día del 2020
-    start = new Date(1, 0, 2020);
+    start = new Date(2020, 0, 1);
   } else {
     start = new Date(dtStart);
   }
@@ -224,12 +225,12 @@ async function getCasosByDate(req, res) {
   try {
     executionContext(async (context) => {
       const { connection } = context;
-      const json = pruebasModel.getDateGroup(connection, start, end);
+      const json = await pruebasModel.getDateGroup(connection, start, end);
       if (json.length === 0) {
         res.sendStatus(404).end();
         return;
       }
-      res.send(json);
+      res.json(json).end();
     });
   } catch (err) {
     // eslint-disable-next-line no-console
