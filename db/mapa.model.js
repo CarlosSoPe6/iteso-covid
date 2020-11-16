@@ -1,4 +1,21 @@
-const QUERY_GET_BY_RADIO = 'SELECT actualizaciones.escrutinio, ROUND(usuarios.latitud, ?) AS latitud, ROUND(usuarios.longitud, ?) AS longitud, COUNT(*) as count FROM actualizaciones JOIN usuarios ON usuarios.IDUsuario = actualizaciones.idUsuario WHERE actualizaciones.escrutinio > 1 GROUP BY ROUND(usuarios.longitud, ?), ROUND(usuarios.latitud, ?), actualizaciones.escrutinio ORDER BY actualizaciones.escrutinio';
+const QUERY_GET_BY_RADIO = `
+SELECT 
+  Actualizaciones.escrutinio,
+  ROUND(Usuarios.latitud, ?) AS latitud,
+  ROUND(Usuarios.longitud, ?) AS longitud,
+  COUNT(*) as count 
+FROM 
+  Actualizaciones 
+JOIN 
+  Usuarios ON Usuarios.IDUsuario = Actualizaciones.idUsuario 
+WHERE 
+Actualizaciones.escrutinio > 1 
+GROUP BY 
+  ROUND(Usuarios.longitud, ?), 
+  ROUND(Usuarios.latitud, ?), 
+  Actualizaciones.escrutinio 
+ORDER BY Actualizaciones.escrutinio;
+`;
 
 async function getByRadio(connection, radio) {
   return new Promise((resolve, reject) => {

@@ -211,7 +211,6 @@ async function verifyAccess(connection, resourceId, accessorId) {
     userId,
     resourceId,
   ];
-  console.log(dataToEscape);
   return new Promise((resolve, reject) => {
     connection.query(
       QUERY_AUTHZ,

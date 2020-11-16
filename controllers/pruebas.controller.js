@@ -208,7 +208,6 @@ async function getCasosByDate(req, res) {
     dtStart,
     dtEnd,
   } = req.query;
-  console.log(req.query);
   let start;
   let end;
   if (dtStart === undefined) {

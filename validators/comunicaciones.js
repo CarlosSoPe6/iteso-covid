@@ -13,7 +13,7 @@ async function exists(id) {
 
 async function validate(data) {
   const validation = validator.validate(data, schema);
-  if (validation.errors.length === 0) {
+  if (validation.errors.length > 0) {
     return { valid: false, data: validation.errors };
   }
   return { valid: true, data };
