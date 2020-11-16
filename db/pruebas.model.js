@@ -15,9 +15,8 @@ a.fechaCreacion as fecha,
   SUM(CASE WHEN u.Sexo > 0 THEN 0 ELSE 1 END)  as totalFemenino
 FROM Actualizaciones a
 JOIN Usuarios u ON a.idUsuario = u.IDUsuario 
-WHERE a.fechaCreacion BETWEEN ? AND ?
-GROUP BY fecha;`;
-
+WHERE a.fechaCreacion BETWEEN ? AND ?;`;
+const EXEC_ACC = 'CALL GetCasosAcomulados()';
 /**
  * Obtiene todas las pruebas de la base de datos.
  * @async
@@ -249,6 +248,22 @@ async function getDateGroup(connection, start, end) {
   });
 }
 
+async function getAcumulados(connection) {
+  return new Promise((resolve, reject) => {
+    connection.query(
+      EXEC_ACC,
+      (err, results) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        // Retorna más info si tienes un CALL XXX()
+        resolve(results[0]);
+      },
+    );
+  });
+}
+
 module.exports = {
   getPruebas,
   getPruebaById,
@@ -259,4 +274,5 @@ module.exports = {
   putPruebaById,
   verifyAccess,
   getDateGroup,
+  getAcumulados,
 };
