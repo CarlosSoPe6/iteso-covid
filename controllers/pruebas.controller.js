@@ -198,33 +198,40 @@ async function putPruebaById(req, res) {
   });
 }
 
-/**
- * GET /covid/api/pruebas/casos?dtStart&dtEnd
- * @param {*} res Request
- * @param {*} res Response
- */
-async function getCasosByDate(req, res) {
-  const {
-    dtStart,
-    dtEnd,
-  } = req.query;
-  let start;
-  let end;
-  if (dtStart === undefined) {
-    // Primer día del 2020
-    start = new Date(2020, 0, 1);
-  } else {
-    start = new Date(dtStart);
+async function getCasosByRange(req, res) {
+  let { rango } = req.query;
+  if (rango === undefined) {
+    rango = 30;
   }
-  if (dtEnd === undefined) {
-    end = new Date(Date.now());
-  } else {
-    end = new Date(end);
-  }
+  const end = new Date(Date.now());
+  const start = new Date(end.getFullYear(), end.getMonth(), end.getDate() - rango);
   try {
     executionContext(async (context) => {
       const { connection } = context;
       const json = await pruebasModel.getDateGroup(connection, start, end);
+      if (json.length === 0) {
+        res.sendStatus(404).end();
+        return;
+      }
+      res.json(json).end();
+    });
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.err(err);
+    res.status(500).send(err.message);
+  }
+}
+
+/**
+ * GET /covid/api/pruebas/acumulados
+ * @param {*} res Request
+ * @param {*} res Response
+ */
+async function getAcumulados(req, res) {
+  try {
+    executionContext(async (context) => {
+      const { connection } = context;
+      const json = await pruebasModel.getAcumulados(connection);
       if (json.length === 0) {
         res.sendStatus(404).end();
         return;
@@ -246,5 +253,6 @@ module.exports = {
   getPruebaByFolio,
   deletePruebaByFolio,
   putPruebaById,
-  getCasosByDate,
+  getAcumulados,
+  getCasosByRange,
 };
