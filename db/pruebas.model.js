@@ -11,8 +11,8 @@ const QUERY_AUTHZ = 'SELECT idEncuesta, idUsuario FROM Actualizaciones WHERE idU
 const QUERY_DATE_GROUP = `SELECT 
 a.fechaCreacion as fecha, 
   COUNT(a.idEncuesta) as total,
-  SUM(CASE WHEN u.Sexo > 0 THEN 1 ELSE 0 END)  as totalMasculino,
-  SUM(CASE WHEN u.Sexo > 0 THEN 0 ELSE 1 END)  as totalFemenino
+  SUM(CASE WHEN u.Sexo > 0 THEN 1 ELSE 0 END)  as totalFemenino,
+  SUM(CASE WHEN u.Sexo > 0 THEN 0 ELSE 1 END)  as totalMasculino
 FROM Actualizaciones a
 JOIN Usuarios u ON a.idUsuario = u.IDUsuario 
 WHERE a.fechaCreacion BETWEEN ? AND ?;`;
