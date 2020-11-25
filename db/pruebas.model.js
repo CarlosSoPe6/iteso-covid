@@ -17,6 +17,7 @@ FROM Actualizaciones a
 JOIN Usuarios u ON a.idUsuario = u.IDUsuario 
 WHERE a.fechaCreacion BETWEEN ? AND ?;`;
 const EXEC_ACC = 'CALL GetCasosAcomulados()';
+const UPDATE_QUERY = 'UPDATE Actualizaciones SET activo=0 WHERE idUsuario=? and activo=1';
 /**
  * Obtiene todas las pruebas de la base de datos.
  * @async
@@ -81,22 +82,38 @@ async function postPrueba(connection, data) {
   const prueba = data;
   prueba.idUsuario = userHash.getIdFromFolio(prueba.folio);
   prueba.fechaCreacion = new Date();
+  prueba.activo = 1;
   const escrutinio = escrutinioCalculator.compute(prueba);
   prueba.escrutinio = escrutinio;
   delete prueba.folio;
+  const updateEscapeData = [prueba.idUsuario];
 
   return new Promise((resolve, reject) => {
     const query = queryGenerator.generateInsertQuery('Actualizaciones', prueba);
-    connection.query(
-      query.query,
-      query.values,
-      (err) => {
-        if (err) {
-          return reject(err);
+    connection.beginTransaction((transactionError) => {
+      if (transactionError) {
+        return reject(transactionError);
+      }
+      return connection.query(UPDATE_QUERY, updateEscapeData, (updateError) => {
+        if (updateError) {
+          connection.rollback(() => {});
+          return reject(updateError);
         }
-        return resolve({ escrutinio });
-      },
-    );
+        return connection.query(query.query, query.values, (insertErr) => {
+          if (insertErr) {
+            connection.rollback(() => {});
+            return reject(insertErr);
+          }
+          return connection.commit((err) => {
+            if (err) {
+              connection.rollback(() => {});
+              return reject(insertErr);
+            }
+            return resolve({ escrutinio });
+          });
+        });
+      });
+    });
   });
 }
 
