@@ -9,7 +9,8 @@ FROM
 JOIN 
   Usuarios ON Usuarios.IDUsuario = Actualizaciones.idUsuario 
 WHERE 
-Actualizaciones.escrutinio > 1 
+Actualizaciones.escrutinio > 1 AND
+activo=1
 GROUP BY 
   ROUND(Usuarios.longitud, ?), 
   ROUND(Usuarios.latitud, ?), 
